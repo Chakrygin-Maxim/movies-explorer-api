@@ -22,6 +22,7 @@ function createMovies(req, res, next) {
     nameRU,
     nameEN,
     thumbnail,
+    movieId,
   } = req.body;
 
   Movie.create({
@@ -35,6 +36,7 @@ function createMovies(req, res, next) {
     nameRU,
     nameEN,
     thumbnail,
+    movieId,
     owner: req.user._id,
   })
     .then((movie) => {
@@ -49,7 +51,7 @@ function createMovies(req, res, next) {
 function deleteMovies(req, res, next) {
   const currentUserId = req.user._id;
 
-  Movie.findById(req.params.id)
+  Movie.findById(req.params.movieId)
     .then((movie) => {
       if (movie === null) {
         throw new NotFoundError("Фильм не найден");
@@ -57,7 +59,7 @@ function deleteMovies(req, res, next) {
       if (movie.owner.toString() !== currentUserId) {
         throw new ForbiddenError("Недостаточно прав на удаление фильма");
       }
-      Movie.findByIdAndDelete(req.params.id)
+      Movie.findByIdAndDelete(req.params.movieId)
         .then((data) => res.send(data))
         .catch(next);
     })

@@ -5,7 +5,7 @@ const validateId = celebrate({
     //* валидируем параметры
     //* id должен быть строкой, состоящей из a-z, A-Z, 0-9, длиной в 24 символа
     //* hex последовательность
-    id: Joi.string().alphanum().length(24).hex(),
+    movieId: Joi.string().alphanum().length(24).hex(),
   }),
 });
 

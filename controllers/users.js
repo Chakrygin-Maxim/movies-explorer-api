@@ -41,7 +41,7 @@ function createUser(req, res, next) {
 }
 
 function getUserInfo(req, res, next) {
-  User.findById(req.params.id)
+  User.findById(req.user._id)
 
     .then((user) => {
       if (user === null) {
@@ -57,11 +57,10 @@ function getUserInfo(req, res, next) {
 }
 
 function updateUserInfo(req, res, next) {
-  const currentUserId = req.user._id;
   const { name, email } = req.body;
 
   User.findByIdAndUpdate(
-    currentUserId,
+    req.user._id,
     { name, email },
     // eslint-disable-next-line comma-dangle
     { new: true, runValidators: true }
