@@ -3,21 +3,19 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const { errors } = require("celebrate");
 const mongoose = require("mongoose");
+const limiter = require("./middlewares/limiter");
 const NotFoundError = require("./errors/NotFoundError");
 const routes = require("./routes/index");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
-const { PORT = 3000 } = process.env;
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
+const {
+  PORT = 3000,
+  DATABASE_URL = "mongodb://localhost:27017/test",
+} = process.env;
 
 app.use(cors());
 app.use(helmet());
@@ -49,7 +47,7 @@ app.use((error, req, res, next) => {
 });
 
 // подключаемся к серверу mongo
-mongoose.connect("mongodb://localhost:27017/bitfilmsdb", {
+mongoose.connect(DATABASE_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
