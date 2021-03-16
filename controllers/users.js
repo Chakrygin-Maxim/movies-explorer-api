@@ -96,4 +96,9 @@ function login(req, res, next) {
     .catch(next);
 }
 
-module.exports = { getUserInfo, updateUserInfo, createUser, login };
+module.exports = {
+  getUserInfo,
+  updateUserInfo,
+  createUser,
+  login,
+};
