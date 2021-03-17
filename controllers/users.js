@@ -2,26 +2,28 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); //* модуль для создания jwt-токенов
 const User = require('../models/user');
 const { JWT_SECRET, JWT_TTL } = require('../config');
-const AuthError = require('../errors/AuthError');
-const NotFoundError = require('../errors/NotFoundError');
-const ConflictError = require('../errors/ConflictError');
+const ValidationError = require('../errors/ValidationError');
 
 function createUser(req, res, next) {
   const { name, email, password } = req.body;
 
   bcrypt
     .hash(password, 10)
-    .then((passwordHash) => User.create({ name, email, passwordHash }))
+    .then((hash) => User.create({ name, email, password: hash }))
     .then((data) => {
-      res.send(data);
+      const user = data;
+      user.password = undefined;
+      res.send(user);
     })
 
     .catch((error) => {
-      if (error.name === 'MongoError' || error.code === 11000) {
-        throw new ConflictError(error.message);
+      if (error.name === 'ValidationError') {
+        throw new ValidationError('Ошибка валидации, проверьте body запроса');
+      } else if (error.name === 'MongoError') {
+        throw new ValidationError('Такой пользователь уже есть');
+      } else {
+        next(error);
       }
-
-      throw new ConflictError(error.message);
     })
     .catch(next);
 }
@@ -30,13 +32,7 @@ function getUserInfo(req, res, next) {
   User.findById(req.user._id)
 
     .then((user) => {
-      if (user === null) {
-        throw new NotFoundError('Пользователь не найден!');
-      }
       res.send(user);
-    })
-    .catch(() => {
-      throw new NotFoundError('Пользователь не найден!');
     })
     .catch(next);
 }
@@ -50,13 +46,7 @@ function updateUserInfo(req, res, next) {
     { new: true, runValidators: true },
   )
     .then((user) => {
-      if (user === null) {
-        throw new NotFoundError('Пользователь не найден!');
-      }
       res.send(user);
-    })
-    .catch((err) => {
-      throw new AuthError(err.message);
     })
 
     .catch(next);
@@ -73,10 +63,6 @@ function login(req, res, next) {
 
       res.status(200).send({ token });
     })
-    .catch((err) => {
-      throw new AuthError(err.message);
-    })
-
     .catch(next);
 }
 

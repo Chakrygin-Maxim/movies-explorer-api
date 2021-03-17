@@ -44,7 +44,9 @@ function handleFindUserByCredentials(email, password) {
       return bcrypt.compare(password, user.password).then((matched) => {
         //* если хеши не совпали - отклоняем промис
         if (!matched) {
-          return Promise.reject(new Error('Неправильные почта или пароль'));
+          return Promise.reject(
+            new Error('Неправильные имя пользователя или пароль'),
+          );
         }
 
         return user; // теперь user доступен

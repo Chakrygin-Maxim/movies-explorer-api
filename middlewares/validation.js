@@ -1,11 +1,8 @@
-const { celebrate, Joi } = require('celebrate'); //* модуль для валидации данных от пользователя до запуска контроллера
+const { celebrate, Joi, errors } = require('celebrate'); //* модуль для валидации данных от пользователя до запуска контроллера
 
 const validateId = celebrate({
   params: Joi.object().keys({
-    //* валидируем параметры
-    //* id должен быть строкой, состоящей из a-z, A-Z, 0-9, длиной в 24 символа
-    //* hex последовательность
-    movieId: Joi.string().alphanum().length(24).hex(),
+    movieId: Joi.number().integer(),
   }),
 });
 
@@ -27,19 +24,19 @@ const validateMovie = celebrate({
     image: Joi.string()
       .required()
       .pattern(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/,
+        /https?:\/\/(www\.)?[-a-zA-Z0-9:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9():%_\\+.~#?&//=]*)/,
       ),
     trailer: Joi.string()
       .required()
       .pattern(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/,
+        /https?:\/\/(www\.)?[-a-zA-Z0-9:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9():%_\\+.~#?&//=]*)/,
       ),
     thumbnail: Joi.string()
       .required()
       .pattern(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/,
+        /https?:\/\/(www\.)?[-a-zA-Z0-9:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9():%_\\+.~#?&//=]*)/,
       ),
-    movieId: Joi.string().alphanum().length(24).hex(),
+    movieId: Joi.number().integer(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
@@ -66,4 +63,5 @@ module.exports = {
   validateMovie,
   validateNewUser,
   validateLogin,
+  errors,
 };

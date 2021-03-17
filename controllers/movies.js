@@ -1,11 +1,9 @@
 const Movie = require('../models/movie');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
-const ForbiddenError = require('../errors/ForbiddenError');
 
 function getMovies(req, res, next) {
   Movie.find({})
-    .populate('owner')
     .then((muvies) => res.send(muvies))
     .catch(next);
 }
@@ -40,31 +38,34 @@ function createMovies(req, res, next) {
     owner: req.user._id,
   })
     .then((movie) => {
-      res.send(movie);
+      const data = movie;
+      data.owner = undefined;
+      res.send(data);
     })
     .catch((err) => {
-      throw new ValidationError(err.message);
+      if (err.name === 'ValidationError') {
+        throw new ValidationError('Ошибка валидации данных');
+      } else {
+        next(err);
+      }
     })
     .catch(next);
 }
 
 function deleteMovies(req, res, next) {
-  const currentUserId = req.user._id;
+  const { movieId } = req.params;
 
-  Movie.findById(req.params.movieId)
-    .then((movie) => {
-      if (movie === null) {
+  Movie.findOne({ movieId })
+    .then((searchMovie) => {
+      if (!searchMovie) {
         throw new NotFoundError('Фильм не найден');
       }
-      if (movie.owner.toString() !== currentUserId) {
-        throw new ForbiddenError('Недостаточно прав на удаление фильма');
-      }
-      Movie.findByIdAndDelete(req.params.movieId)
-        .then((data) => res.send(data))
-        .catch(next);
-    })
-    .catch((err) => {
-      throw new NotFoundError(err.message);
+      Movie.findByIdAndDelete(searchMovie._id).then((movie) => {
+        const data = movie;
+        data.owner = undefined;
+
+        res.send(data);
+      });
     })
     .catch(next);
 }
