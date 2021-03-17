@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const { textEmailNotValid } = require('../config');
+const AuthError = require('../errors/AuthError');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -30,14 +31,14 @@ function handleFindUserByCredentials(email, password) {
     .then((user) => {
       //* если не нашёлся — отклоняем промис создав ошибку
       if (!user) {
-        return Promise.reject(new Error(textEmailNotValid));
+        throw new AuthError(textEmailNotValid);
       }
 
       //* если нашёлся — сравниваем хеши паролей
       return bcrypt.compare(password, user.password).then((matched) => {
         //* если хеши не совпали - отклоняем промис
         if (!matched) {
-          return Promise.reject(new Error(textEmailNotValid));
+          throw new AuthError(textEmailNotValid);
         }
 
         return user; // теперь user доступен
