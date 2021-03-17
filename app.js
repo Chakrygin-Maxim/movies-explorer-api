@@ -53,5 +53,4 @@ mongoose.connect(DATABASE_URL, {
   useFindAndModify: false,
 });
 
-mongoose.connection.on('open');
 app.listen(PORT);
