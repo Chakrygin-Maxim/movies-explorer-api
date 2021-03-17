@@ -35,8 +35,7 @@ function getUserInfo(req, res, next) {
       }
       res.send(user);
     })
-    // eslint-disable-next-line no-unused-vars
-    .catch((err) => {
+    .catch(() => {
       throw new NotFoundError('Пользователь не найден!');
     })
     .catch(next);
@@ -48,8 +47,7 @@ function updateUserInfo(req, res, next) {
   User.findByIdAndUpdate(
     req.user._id,
     { name, email },
-    // eslint-disable-next-line comma-dangle
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((user) => {
       if (user === null) {

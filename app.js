@@ -53,12 +53,5 @@ mongoose.connect(DATABASE_URL, {
   useFindAndModify: false,
 });
 
-mongoose.connection.on('open', () => {
-  // eslint-disable-next-line no-console
-  console.log('DB connected');
-});
-
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`App listening on port ${PORT}`);
-});
+mongoose.connection.on('open');
+app.listen(PORT);
