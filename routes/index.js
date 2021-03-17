@@ -6,6 +6,7 @@ const {
   errors,
 } = require('../middlewares/validation');
 const NotFoundError = require('../errors/NotFoundError');
+const { textNotFoundError } = require('../config');
 
 const moviesRouter = require('./movies');
 const usersRouter = require('./users');
@@ -17,7 +18,7 @@ router.use(usersRouter, moviesRouter);
 
 // заглушка других запросов на несуществующий адрес
 router.use('*', () => {
-  throw new NotFoundError('Запрашиваемый ресурс не найден');
+  throw new NotFoundError(textNotFoundError);
 });
 
 router.use(errors());

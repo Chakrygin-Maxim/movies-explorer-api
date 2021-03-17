@@ -24,35 +24,14 @@ const movieSchema = new mongoose.Schema({
   image: {
     type: String,
     required: true,
-    validate: {
-      validator(link) {
-        const regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/;
-        return regex.test(link);
-      },
-      message: (props) => `${props.value} невалидная ссылка!`,
-    },
   },
   trailer: {
     type: String,
     required: true,
-    validate: {
-      validator(link) {
-        const regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/;
-        return regex.test(link);
-      },
-      message: (props) => `${props.value} невалидная ссылка!`,
-    },
   },
   thumbnail: {
     type: String,
     required: true,
-    validate: {
-      validator(link) {
-        const regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/;
-        return regex.test(link);
-      },
-      message: (props) => `${props.value} невалидная ссылка!`,
-    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

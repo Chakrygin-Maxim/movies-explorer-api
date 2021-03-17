@@ -1,6 +1,7 @@
 const Movie = require('../models/movie');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
+const { textFilmNotFound, textValidationError } = require('../config/index');
 
 function getMovies(req, res, next) {
   Movie.find({})
@@ -44,7 +45,7 @@ function createMovies(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Ошибка валидации данных');
+        throw new ValidationError(textValidationError);
       } else {
         next(err);
       }
@@ -58,7 +59,7 @@ function deleteMovies(req, res, next) {
   Movie.findOne({ movieId })
     .then((searchMovie) => {
       if (!searchMovie) {
-        throw new NotFoundError('Фильм не найден');
+        throw new NotFoundError(textFilmNotFound);
       }
       Movie.findByIdAndDelete(searchMovie._id).then((movie) => {
         const data = movie;
