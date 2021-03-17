@@ -1,4 +1,4 @@
-const { celebrate, Joi } = require("celebrate"); //* модуль для валидации данных от пользователя до запуска контроллера
+const { celebrate, Joi } = require('celebrate'); //* модуль для валидации данных от пользователя до запуска контроллера
 
 const validateId = celebrate({
   params: Joi.object().keys({
@@ -24,11 +24,7 @@ const validateMovie = celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string()
-      .required()
-      .pattern(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/,
-      ),
+    image: Joi.string().required().pattern(),
     trailer: Joi.string()
       .required()
       .pattern(

@@ -1,20 +1,20 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const helmet = require("helmet");
-const cors = require("cors");
-const { errors } = require("celebrate");
-const mongoose = require("mongoose");
-const { limiter } = require("./middlewares/limiter");
-const NotFoundError = require("./errors/NotFoundError");
-const routes = require("./routes/index");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
+const express = require('express');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const cors = require('cors');
+const { errors } = require('celebrate');
+const mongoose = require('mongoose');
+const { limiter } = require('./middlewares/limiter');
+const NotFoundError = require('./errors/NotFoundError');
+const routes = require('./routes/index');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 const {
   PORT = 3000,
-  DATABASE_URL = "mongodb://localhost:27017/test",
+  DATABASE_URL = 'mongodb://localhost:27017/test',
 } = process.env;
 
 app.use(cors());
@@ -28,8 +28,8 @@ app.use(requestLogger);
 app.use(routes);
 
 // заглушка других запросов на несуществующий адрес
-app.use("*", () => {
-  throw new NotFoundError("Запрашиваемый ресурс не найден");
+app.use('*', () => {
+  throw new NotFoundError('Запрашиваемый ресурс не найден');
 });
 
 app.use(errorLogger);
@@ -40,7 +40,7 @@ app.use((error, req, res, next) => {
   const { statusCode = 500, message } = error;
 
   res.status(statusCode).send({
-    message: statusCode === 500 ? "На сервере произошла ошибка" : message,
+    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
   });
 
   next();
@@ -53,9 +53,9 @@ mongoose.connect(DATABASE_URL, {
   useFindAndModify: false,
 });
 
-mongoose.connection.on("open", () => {
+mongoose.connection.on('open', () => {
   // eslint-disable-next-line no-console
-  console.log("DB connected");
+  console.log('DB connected');
 });
 
 app.listen(PORT, () => {

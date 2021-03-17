@@ -1,11 +1,11 @@
-const Movie = require("../models/movie");
-const NotFoundError = require("../errors/NotFoundError");
-const ValidationError = require("../errors/ValidationError");
-const ForbiddenError = require("../errors/ForbiddenError");
+const Movie = require('../models/movie');
+const NotFoundError = require('../errors/NotFoundError');
+const ValidationError = require('../errors/ValidationError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 function getMovies(req, res, next) {
   Movie.find({})
-    .populate("owner")
+    .populate('owner')
     .then((muvies) => res.send(muvies))
     .catch(next);
 }
@@ -54,10 +54,10 @@ function deleteMovies(req, res, next) {
   Movie.findById(req.params.movieId)
     .then((movie) => {
       if (movie === null) {
-        throw new NotFoundError("Фильм не найден");
+        throw new NotFoundError('Фильм не найден');
       }
       if (movie.owner.toString() !== currentUserId) {
-        throw new ForbiddenError("Недостаточно прав на удаление фильма");
+        throw new ForbiddenError('Недостаточно прав на удаление фильма');
       }
       Movie.findByIdAndDelete(req.params.movieId)
         .then((data) => res.send(data))

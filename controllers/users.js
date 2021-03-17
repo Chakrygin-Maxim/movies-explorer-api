@@ -1,37 +1,23 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken"); //* модуль для создания jwt-токенов
-const User = require("../models/user");
-const { JWT_SECRET, JWT_TTL } = require("../config");
-const AuthError = require("../errors/AuthError");
-const NotFoundError = require("../errors/NotFoundError");
-const ConflictError = require("../errors/ConflictError");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken'); //* модуль для создания jwt-токенов
+const User = require('../models/user');
+const { JWT_SECRET, JWT_TTL } = require('../config');
+const AuthError = require('../errors/AuthError');
+const NotFoundError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/ConflictError');
 
 function createUser(req, res, next) {
-  // eslint-disable-next-line object-curly-newline
   const { name, email, password } = req.body;
 
   bcrypt
     .hash(password, 10)
-    // eslint-disable-next-line no-shadow
-    .then(
-      // eslint-disable-next-line no-shadow
-      (password) =>
-        // eslint-disable-next-line implicit-arrow-linebreak
-        User.create({
-          name,
-          email,
-          password,
-          // eslint-disable-next-line comma-dangle
-        })
-      // eslint-disable-next-line function-paren-newline
-    )
+    .then((passwordHash) => User.create({ name, email, passwordHash }))
     .then((data) => {
       res.send(data);
     })
 
     .catch((error) => {
-      if (error.name === "MongoError" || error.code === 11000) {
-        // пользователь с такой почтой уже существует
+      if (error.name === 'MongoError' || error.code === 11000) {
         throw new ConflictError(error.message);
       }
 
@@ -45,13 +31,13 @@ function getUserInfo(req, res, next) {
 
     .then((user) => {
       if (user === null) {
-        throw new NotFoundError("Пользователь не найден!");
+        throw new NotFoundError('Пользователь не найден!');
       }
       res.send(user);
     })
     // eslint-disable-next-line no-unused-vars
     .catch((err) => {
-      throw new NotFoundError("Пользователь не найден!");
+      throw new NotFoundError('Пользователь не найден!');
     })
     .catch(next);
 }
@@ -67,7 +53,7 @@ function updateUserInfo(req, res, next) {
   )
     .then((user) => {
       if (user === null) {
-        throw new NotFoundError("Пользователь не найден!");
+        throw new NotFoundError('Пользователь не найден!');
       }
       res.send(user);
     })
