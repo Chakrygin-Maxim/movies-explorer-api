@@ -2,8 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); //* модуль для создания jwt-токенов
 const User = require('../models/user');
 const { JWT_SECRET, JWT_TTL } = require('../config');
-const ValidationError = require('../errors/ValidationError');
-const { textUserAlreadyCreate, textValidationError } = require('../config');
+const ConflictError = require('../errors/ConflictError');
+const { textUserAlreadyCreate } = require('../config');
 
 function createUser(req, res, next) {
   const { name, email, password } = req.body;
@@ -18,10 +18,8 @@ function createUser(req, res, next) {
     })
 
     .catch((error) => {
-      if (error.name === 'ValidationError') {
-        throw new ValidationError(textValidationError);
-      } else if (error.name === 'MongoError') {
-        throw new ValidationError(textUserAlreadyCreate);
+      if (error.name === 'MongoError' && error.code === 11000) {
+        throw new ConflictError(textUserAlreadyCreate);
       } else {
         next(error);
       }
