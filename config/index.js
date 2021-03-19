@@ -10,6 +10,7 @@ const config = {
   textNotFoundError: 'Запрашиваемый ресурс не найден',
   textUserAlreadyCreate: 'Такой пользователь уже есть',
   textErrorDefault: 'На сервере произошла ошибка',
+  textDeleteError: 'Недостаточно прав на удаление фильма',
 };
 
 module.exports = config;

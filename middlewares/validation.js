@@ -2,7 +2,7 @@ const { celebrate, Joi, errors } = require('celebrate'); //* модуль для
 
 const validateId = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.number().integer(),
+    movieId: Joi.string().length(24).hex(),
   }),
 });
 

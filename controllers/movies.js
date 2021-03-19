@@ -1,7 +1,12 @@
 const Movie = require('../models/movie');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
-const { textFilmNotFound, textValidationError } = require('../config/index');
+const ForbiddenError = require('../errors/ForbiddenError');
+const {
+  textFilmNotFound,
+  textValidationError,
+  textDeleteError,
+} = require('../config/index');
 
 function getMovies(req, res, next) {
   Movie.find({})
@@ -54,17 +59,21 @@ function createMovies(req, res, next) {
 }
 
 function deleteMovies(req, res, next) {
+  const currentUserId = req.user._id;
   const { movieId } = req.params;
 
-  Movie.findOne({ movieId })
-    .then((searchMovie) => {
-      if (!searchMovie) {
+  Movie.findById(movieId)
+    .select('+owner')
+    .then((movie) => {
+      if (movie === null) {
         throw new NotFoundError(textFilmNotFound);
       }
-      Movie.findByIdAndDelete(searchMovie._id).then((movie) => {
-        const data = movie;
+      if (movie.owner.toString() !== currentUserId) {
+        throw new ForbiddenError(textDeleteError);
+      }
+      Movie.findByIdAndDelete(movieId).then((foundFilm) => {
+        const data = foundFilm;
         data.owner = undefined;
-
         res.send(data);
       });
     })
