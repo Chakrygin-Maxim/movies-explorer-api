@@ -23,3 +23,7 @@
 
 `npm run start` — запускает сервер  
 `npm run dev` — запускает сервер с hot-reload
+
+## Api
+
+Api проекта находится по адресу: `api.movies-explorer.chakrygin.students.nomoredomains.monster`
